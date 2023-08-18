@@ -1,29 +1,32 @@
 import throttle from "lodash.throttle";
-// var throttle = require('lodash.throttle');
 
 const STOR_KEY = "feedback-form-state";
-const form = {};
+let form = {};
 
 const refer = {
-    form: document.querySelector(".feedback-form"),
+    input: document.querySelector(".feedback-form"),
 }
 
-refer.form.addEventListener("input", throttle(onModifyForm,500));
-refer.form.addEventListener("submit", onSubmitForm);
+refer.input.addEventListener("input", throttle(onModifyForm,500));
+refer.input.addEventListener("submit", onSubmitForm);
 
 readForm();
 
-//обробка введення даних в формі
-function onModifyForm(evt) {
-    const { elements: { email, message } } = evt.currentTarget;
-    form.email = email.value;
-    form.message = message.value;
+//обробка події введення даних в формі
+function onModifyForm(e) {
+    form.email = refer.input.elements.email.value;
+    form.message = refer.input.elements.message.value;
     saveForm(form);
 };
 
 //обробка слухача submit
-function onSubmitForm(evt) {
-    evt.preventDefault();
+function onSubmitForm(e) {
+    const { elements: { email, message } } = e.currentTarget;
+    if (email.value === "" || message.value === "") {
+        alert("Заповніть пусті поля");
+        return;
+    }
+    e.preventDefault();
     console.log(form);
     initForm(form);
     saveForm(form);
@@ -32,8 +35,11 @@ function onSubmitForm(evt) {
 //зчитування зі сховища обєкта форми та ініціалізація обєкту
 function readForm() {
     try {
-        const form = JSON.parse(localStorage.getItem(STOR_KEY));
+        form = JSON.parse(localStorage.getItem(STOR_KEY));
+        refer.input.elements.email.value = form.email;
+        refer.input.elements.message.value = form.message;
     } catch (error) {
+        console.log("error read storage form!");
         initForm(form);
     }
     return;
@@ -48,5 +54,5 @@ function saveForm(obj) {
 function initForm(obj) {
     obj.email = "";
     obj.message = "";
-    refer.form.reset();
+    refer.input.reset();
 }
