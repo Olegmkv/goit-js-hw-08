@@ -14,19 +14,18 @@ readForm();
 
 //обробка події введення даних в формі
 function onModifyForm(e) {
-    form.email = refer.input.elements.email.value;
-    form.message = refer.input.elements.message.value;
+    form[e.target.name]=e.target.value
     saveForm(form);
 };
 
 //обробка слухача submit
 function onSubmitForm(e) {
+    e.preventDefault();
     const { elements: { email, message } } = e.currentTarget;
     if (email.value === "" || message.value === "") {
         alert("Заповніть пусті поля");
         return;
     }
-    e.preventDefault();
     console.log(form);
     initForm(form);
     saveForm(form);
