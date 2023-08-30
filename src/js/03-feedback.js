@@ -39,6 +39,7 @@ function readForm() {
         refer.input.elements.message.value = form.message;
     } catch (error) {
         console.log("error read storage form!");
+        form = {};
         initForm(form);
     }
     return;
